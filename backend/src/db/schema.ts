@@ -32,11 +32,11 @@ export const jogadorMarcador = mysqlTable("jogadormarcador", {
 
 export const selecaojogador = mysqlTable("selecaojogador", {
     fk_Selecao_Nome: varchar("fk_Selecao_Nome", {length: 30}).primaryKey().references(() => selecao.nome),
-    fk_Jogador_Nome: varchar("fk_Jogador_Nome", {length: 30}).primaryKey().references(() => jogador.nome),
+    fk_Jogador_Nome: varchar("fk_Jogador_Nome", {length: 30}).primaryKey().references(() => jogadorMarcador.nome),
 });
 
 export const temGolMarcadoPor = mysqlTable("temgolmarcadopor", {
-    fk_Jogador_Nome: varchar("fk_JogadorMarcador_Nome", {length: 30}).primaryKey().references(() => jogador.nome),
+    fk_Jogador_Nome: varchar("fk_JogadorMarcador_Nome", {length: 30}).primaryKey().references(() => jogadorMarcador.nome),
     fk_Partida_Data: date("fk_Partida_Data").primaryKey().references(() => partida.data),
     penalti: boolean("Penalti"),
     minuto: int("MinutodoGol").primaryKey(),

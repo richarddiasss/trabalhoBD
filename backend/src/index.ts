@@ -10,23 +10,6 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Hellodadadada World!");
 });
 
-app.get("/torneios", async (req: Request, res: Response) => {
-  try {
-      const torneios = await db.select().from(torneio);
-      res.status(200).json(torneios);
-  } catch (error) {
-      res.status(500).json({ error: error.message });
-  }
-});
-
-app.get("/partida", async (req: Request, res: Response) => {
-  try {
-      const torneios = await db.select().from(partida).limit(10);
-      res.status(200).json(torneios);
-  } catch (error) {
-      res.status(500).json({ error: error.message });
-  }
-});
 
 //Consultas com Junções
 
@@ -105,21 +88,32 @@ app.get("/selecoesAcimaMedia", async (req: Request, res: Response) => {
   try {
     const selecoesAcimaMedia = await db.execute(
       sql`
-        SELECT s.nome AS selecao
-        FROM selecao s
-        WHERE (
-          SELECT COUNT(tgp.minutoDoGol)
-          FROM temGolMarcadoPor tgp
-          INNER JOIN selecaoJogador sj ON sj.fk_JogadorMarcador_Nome = tgp.fk_JogadorMarcador_Nome
-          WHERE sj.fk_Selecao_Nome = s.nome
-        ) > (
-          SELECT AVG(golsTotal)
-          FROM (
-            SELECT COUNT(tgp.minutoDoGol) AS golsTotal
-            FROM temGolMarcadoPor tgp
-            GROUP BY tgp.fk_JogadorMarcador_Nome
-          ) AS mediaGols
-        )
+        WITH GolsPorSelecao AS (
+    SELECT 
+        s.nome AS selecao,
+        COUNT(tgp.minutoDoGol) as total_gols
+    FROM selecao s
+    LEFT JOIN selecaoJogador sj ON sj.fk_Selecao_Nome = s.nome
+    LEFT JOIN temGolMarcadoPor tgp ON sj.fk_JogadorMarcador_Nome = tgp.fk_JogadorMarcador_Nome
+    GROUP BY s.nome
+),
+MediaGolsJogadores AS (
+    SELECT AVG(golsTotal) as media_gols
+    FROM (
+        SELECT 
+            COUNT(tgp.minutoDoGol) AS golsTotal
+        FROM temGolMarcadoPor tgp
+        GROUP BY tgp.fk_JogadorMarcador_Nome
+    ) AS mediaGols
+)
+SELECT 
+    gps.selecao,
+    gps.total_gols,
+    mgj.media_gols
+FROM GolsPorSelecao gps, MediaGolsJogadores mgj
+WHERE gps.total_gols > mgj.media_gols
+ORDER BY gps.total_gols DESC
+LIMIT 10;
       `
     );
     
@@ -133,42 +127,43 @@ app.get("/selecoesComGoleadoresAcimaMedia", async (req: Request, res: Response) 
   try {
     const selecoesComGoleadoresAcimaMedia = await db.execute(
       sql`
-        SELECT DISTINCT 
-          s.nome AS selecao,
-          jm.nome AS jogador,
-          (SELECT COUNT(tgp2.minutoDoGol)
-           FROM temGolMarcadoPor tgp2
-           WHERE tgp2.fk_JogadorMarcador_Nome = tgp.fk_JogadorMarcador_Nome
-             AND tgp2.golContra = FALSE) AS totalGols,
-          (SELECT AVG(totalGols)
-           FROM (
-             SELECT COUNT(tgp3.minutoDoGol) AS totalGols
-             FROM temGolMarcadoPor tgp3
-             WHERE tgp3.golContra = FALSE
-             GROUP BY tgp3.fk_JogadorMarcador_Nome
-           ) AS mediaGols) AS mediaGeral
-        FROM 
-          selecao s
-        INNER JOIN 
-          selecaoJogador sj ON s.nome = sj.fk_Selecao_Nome
-        INNER JOIN 
-          temGolMarcadoPor tgp ON sj.fk_JogadorMarcador_Nome = tgp.fk_JogadorMarcador_Nome
-        INNER JOIN 
-          jogadorMarcador jm ON jm.nome = tgp.fk_JogadorMarcador_Nome
-        WHERE 
-          (SELECT COUNT(tgp2.minutoDoGol)
-           FROM temGolMarcadoPor tgp2
-           WHERE tgp2.fk_JogadorMarcador_Nome = tgp.fk_JogadorMarcador_Nome
-             AND tgp2.golContra = FALSE) 
-          > 
-          (SELECT AVG(totalGols)
-           FROM (
-             SELECT COUNT(tgp3.minutoDoGol) AS totalGols
-             FROM temGolMarcadoPor tgp3
-             WHERE tgp3.golContra = FALSE
-             GROUP BY tgp3.fk_JogadorMarcador_Nome
-           ) AS mediaGols)
-            LIMIT 50;
+          SELECT DISTINCT 
+      s.nome AS selecao,
+      jm.nome AS jogador,
+      (SELECT COUNT(tgp2.minutoDoGol)
+      FROM temGolMarcadoPor tgp2
+      WHERE tgp2.fk_JogadorMarcador_Nome = tgp.fk_JogadorMarcador_Nome
+        AND tgp2.golContra = FALSE) AS totalGols,
+      (SELECT AVG(totalGols)
+      FROM (
+        SELECT COUNT(tgp3.minutoDoGol) AS totalGols
+        FROM temGolMarcadoPor tgp3
+        WHERE tgp3.golContra = FALSE
+        GROUP BY tgp3.fk_JogadorMarcador_Nome
+      ) AS mediaGols) AS mediaGeral
+  FROM 
+      selecao s
+  INNER JOIN 
+      selecaoJogador sj ON s.nome = sj.fk_Selecao_Nome
+  INNER JOIN 
+      temGolMarcadoPor tgp ON sj.fk_JogadorMarcador_Nome = tgp.fk_JogadorMarcador_Nome
+  INNER JOIN 
+      jogadorMarcador jm ON jm.nome = tgp.fk_JogadorMarcador_Nome
+  WHERE 
+      (SELECT COUNT(tgp2.minutoDoGol)
+      FROM temGolMarcadoPor tgp2
+      WHERE tgp2.fk_JogadorMarcador_Nome = tgp.fk_JogadorMarcador_Nome
+        AND tgp2.golContra = FALSE) 
+      > 
+      (SELECT AVG(totalGols)
+      FROM (
+        SELECT COUNT(tgp3.minutoDoGol) AS totalGols
+        FROM temGolMarcadoPor tgp3
+        WHERE tgp3.golContra = FALSE
+        GROUP BY tgp3.fk_JogadorMarcador_Nome
+      ) AS mediaGols)
+  ORDER BY totalGols DESC
+  LIMIT 10;
       `
     );
     
@@ -197,7 +192,7 @@ app.get("/selecoesCampoNeutro", async (req: Request, res: Response) => {
           selecao s2 ON p.fk_Selecao_Nome2 = s2.nome
         WHERE 
           p.campo_neutro = TRUE
-        LIMIT 50;
+        LIMIT 10;
       `
     );
     
