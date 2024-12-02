@@ -1,6 +1,7 @@
 import React from 'react';
 import logo from "../../assets/HeaderAssets/logoSite.png";
 import { HeaderBase, LogoHeader, LogoImg, NomeHeader, BotoesHeader, HomeButton, SobreButton } from './style';
+import {Link} from "react-router-dom";
 
 export default function HeaderHome (){
 
@@ -11,13 +12,9 @@ export default function HeaderHome (){
                 <NomeHeader>FutClassics</NomeHeader>
             </LogoHeader>
             <BotoesHeader>
-                <div className='HomeButton'>Home</div>
-                <div className='SobreButton'>Sobre</div>
+                <Link to="/">Home</Link>
+                <Link to="/sobre">Sobre</Link>
             </BotoesHeader>
         </HeaderBase>
     )
-
-
-
-
 }

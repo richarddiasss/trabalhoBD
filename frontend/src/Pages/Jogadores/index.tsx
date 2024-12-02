@@ -5,7 +5,7 @@ import { Titulo } from '../../components/TituloPagina/style';
 import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
 
 const rows: GridRowsProp = [
-    { id: 1, col1: 'Cristiano Ronaldo', col2: '108' },
+    { id: 1, col1: 'Cristiano Ronaldo', col2: '100' },
     { id: 2, col1: 'Robert Lewandowski', col2: '62' },
     { id: 3, col1: 'Romelu Lukaku', col2: '60' },
     { id: 4, col1: 'Harry Kane', col2: '58' },
@@ -18,8 +18,8 @@ const rows: GridRowsProp = [
   
 
 const columns: GridColDef[] = [
-    { field: 'col1', headerName: 'Jogador', width: 250 },
-    { field: 'col2', headerName: 'Total de gols', width: 250 },
+    { field: 'col1', headerName: 'Jogador', width: 300 },
+    { field: 'col2', headerName: 'Total de gols', width: 300 },
   ];
   
 
@@ -34,6 +34,7 @@ export default function Jogadores(){
                     backgroundColor: '#F3F3F3',
                     marginTop: '2%',
                     fontSize: '20px',
+                    width:'90%',
                 }} 
                 rows={rows} 
                 columns={columns}>
