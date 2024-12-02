@@ -1,11 +1,10 @@
 import styled from "styled-components";
 
 export const SobreDiv = styled.div`
-
 `
 
 export const Container = styled.div`
-    padding: 2%;
+    padding: 5%;
 `
 
 export const Titulo = styled.text`
