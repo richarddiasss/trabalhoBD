@@ -9,9 +9,3 @@ export const JogadorContainer = styled.div`
     text-align: center;
     align-items: center;
 `
-
-export const Titulo = styled.text`
-    color: #FFFFFF;
-    font-size: 54.1px;
-    font-weight: 500;
-`

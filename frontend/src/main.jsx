@@ -7,9 +7,14 @@ import {
   RouterProvider
 } from 'react-router-dom'
 
+// Páginas
 import Home from './Pages/Home'
 import Sobre from './Pages/Sobre'
-import Jogadores from './Pages/Jogadores'
+import Jogadores from './Pages/JogadoresGol'
+import PartidasContinente from './Pages/PartidasContinente'
+import Goleadores from './Pages/GoleadoresGolMedia'
+import CampoNeutro from './Pages/CampoNeutro'
+import Selecoes from './Pages/SelecoesGolsMedia'
 
 const router = createBrowserRouter([
   {
@@ -23,6 +28,22 @@ const router = createBrowserRouter([
   {
     path: "/jogadores",
     element: <Jogadores />
+  },
+  {
+    path: "/partidas-por-continente",
+    element: <PartidasContinente/>
+  },
+  {
+    path: "/goleadores",
+    element: <Goleadores/>
+  },
+  {
+    path: "/campo-neutro",
+    element: <CampoNeutro/>
+  },
+  {
+    path: "/selecoes",
+    element: <Selecoes/>
   }
 ])
 
