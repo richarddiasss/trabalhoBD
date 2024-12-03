@@ -15,8 +15,8 @@ const rows: GridRowsProp = [
   
 
 const columns: GridColDef[] = [
-    { field: 'col1', headerName: 'Jogador', width: 200, headerAlign: 'center' },
-    { field: 'col2', headerName: 'Total de gols', width: 200, headerAlign: 'center' },
+    { field: 'col1', headerName: 'Jogador', flex: 1, headerAlign: 'center' },
+    { field: 'col2', headerName: 'Total de gols', flex: 1, headerAlign: 'center' },
   ];
   
 
@@ -31,7 +31,7 @@ export default function Jogadores(){
                         backgroundColor: '#F3F3F3',
                         marginTop: '2%',
                         fontSize: '20px',
-                        width:'90%',
+                        width:'70%',
                     }} 
                     rows={rows} 
                     columns={columns}

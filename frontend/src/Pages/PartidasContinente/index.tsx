@@ -29,7 +29,7 @@ export default function PartidasContinente(){
                         backgroundColor: '#F3F3F3',
                         marginTop: '2%',
                         fontSize: '20px',
-                        width:'80%',
+                        width:'70%',
                     }} 
                     rows={rows}
                     columns={columns}
