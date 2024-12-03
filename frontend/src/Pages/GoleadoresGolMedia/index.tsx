@@ -11,10 +11,10 @@ const rows: GridRowsProp = [
 ]
 
 const columns: GridColDef[] = [
-    {field: 'col1', headerName: 'Seleção', flex: 1, headerAlign: 'center'},
-    {field: 'col2', headerName: 'Jogador', flex: 1, headerAlign: 'center'},
-    {field: 'col3', headerName: 'Gols', flex: 1, headerAlign: 'center'},
-    {field: 'col4', headerName: 'Média Geral', flex: 1, headerAlign: 'center'}
+    {field: 'col1', headerName: 'Seleção', width: 250, headerAlign: 'center'},
+    {field: 'col2', headerName: 'Jogador', width: 250, headerAlign: 'center'},
+    {field: 'col3', headerName: 'Gols', width: 250, headerAlign: 'center'},
+    {field: 'col4', headerName: 'Média Geral', width: 250, headerAlign: 'center'}
 ]
 
 export default function Goleadores(){

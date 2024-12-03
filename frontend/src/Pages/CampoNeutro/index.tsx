@@ -11,11 +11,11 @@ const rows: GridRowsProp = [
 ]
 
 const columns: GridColDef[] = [
-    { field: 'col1', headerName: 'Data', flex: 1, headerAlign: 'center' },
-    { field: 'col2', headerName: 'Mandante', flex: 1, headerAlign: 'center' },
-    { field: 'col3', headerName: 'Visitante', flex: 1, headerAlign: 'center' },
-    { field: 'col4', headerName: 'Cidade', flex: 1, headerAlign: 'center' },
-    { field: 'col5', headerName: 'País', flex: 1, headerAlign: 'center' }
+    { field: 'col1', headerName: 'Data', width: 220, headerAlign: 'center' },
+    { field: 'col2', headerName: 'Mandante', width: 220, headerAlign: 'center' },
+    { field: 'col3', headerName: 'Visitante', width: 220, headerAlign: 'center' },
+    { field: 'col4', headerName: 'Cidade', width: 220, headerAlign: 'center' },
+    { field: 'col5', headerName: 'País', width: 220, headerAlign: 'center' }
 ]
 
 export default function CampoNeutro(){

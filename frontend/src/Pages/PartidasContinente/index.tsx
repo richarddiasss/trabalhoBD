@@ -14,8 +14,8 @@ const rows: GridRowsProp = [
 ];
 
 const columns: GridColDef[] = [
-    {field: 'col1', headerName: 'Continente', flex: 1, headerAlign: 'center'},
-    {field: 'col2', headerName: 'Numero de partidas', flex: 1, headerAlign: 'center'}
+    {field: 'col1', headerName: 'Continente', width: 350, headerAlign: 'center'},
+    {field: 'col2', headerName: 'Numero de partidas', width: 350, headerAlign: 'center'}
 ]
 
 export default function PartidasContinente(){
@@ -29,7 +29,7 @@ export default function PartidasContinente(){
                         backgroundColor: '#F3F3F3',
                         marginTop: '2%',
                         fontSize: '20px',
-                        width:'80%',
+                        width:'70%',
                     }} 
                     rows={rows}
                     columns={columns}
