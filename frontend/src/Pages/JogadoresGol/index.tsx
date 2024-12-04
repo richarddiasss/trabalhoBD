@@ -3,16 +3,9 @@ import {JogadorContainer, JogadoresDiv } from './style';
 import HeaderHome from "../../components/HeaderHome";
 import { Titulo } from '../../components/TituloPagina/style';
 import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
-const rows: GridRowsProp = [
-    { id: 1, col1: 'Cristiano Ronaldo', col2: '100' },
-    { id: 2, col1: 'Robert Lewandowski', col2: '62' },
-    { id: 3, col1: 'Romelu Lukaku', col2: '60' },
-    { id: 4, col1: 'Harry Kane', col2: '58' },
-    { id: 5, col1: 'Lionel Messi', col2: '55' },
-    { id: 6, col1: 'Edin Dzeko', col2: '50' },
-  ];
-  
 
 const columns: GridColDef[] = [
     { field: 'col1', headerName: 'Jogador', width: 400, headerAlign: 'center' },
@@ -21,6 +14,38 @@ const columns: GridColDef[] = [
   
 
 export default function Jogadores(){
+
+    const [jogadores, setJogadores] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const response = await axios.get('http://localhost:3000/golsJogador');
+                setJogadores(response.data);
+                setLoading(false);
+            } catch (error) {
+                console.error('Erro ao buscar dados:', error);
+                setLoading(false);
+            }
+        }
+    
+        fetchData();
+    }, []);
+
+    const rows: GridRowsProp = jogadores.map((jogador, index) => {
+        console.log('Continente:', jogador);
+        return {
+            id: jogador.id || index,
+            col1: jogador.jogador,
+            col2: jogador.totalGols
+        }
+    });
+    
+    if (loading) {
+        return <div>Carregando...</div>
+    }
+
     return(
         <JogadoresDiv>
             <HeaderHome/>

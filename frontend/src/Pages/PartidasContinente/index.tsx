@@ -3,15 +3,10 @@ import HeaderHome from "../../components/HeaderHome";
 import { Titulo } from '../../components/TituloPagina/style';
 import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
 import { ContainerPartidas, PartidasDiv } from './style';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
-const rows: GridRowsProp = [
-    {id: 1, col1: 'Europa', col2: 29573 },
-    {id: 2, col1: 'Ásia', col2: 17235},
-    {id: 3, col1: 'África', col2: 20596},
-    {id: 4, col1: 'Oceania', col2: 2022},
-    {id: 5, col1: 'América do Norte', col2: 10442},
-    {id: 6, col1: 'América do Sul', col2: 8074}
-];
+
 
 const columns: GridColDef[] = [
     {field: 'col1', headerName: 'Continente', width: 350, headerAlign: 'center'},
@@ -19,6 +14,37 @@ const columns: GridColDef[] = [
 ]
 
 export default function PartidasContinente(){
+    const [continentes, setContinentes] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const response = await axios.get('http://localhost:3000/partidasPorContinente');
+                setContinentes(response.data);
+                setLoading(false);
+            } catch (error) {
+                console.error('Erro ao buscar dados:', error);
+                setLoading(false);
+            }
+        }
+    
+        fetchData();
+    }, []);
+
+    const rows: GridRowsProp = continentes.map((continente, index) => {
+        return {
+            id: continente.id || index,
+            col1: continente.continente,
+            col2: continente.numeroDePartidas
+        }
+    });
+    
+
+    if (loading) {
+        return <div>Carregando...</div>
+    }
+
     return(
         <PartidasDiv>
             <HeaderHome/>
@@ -33,9 +59,7 @@ export default function PartidasContinente(){
                     }} 
                     rows={rows}
                     columns={columns}
-                >
-
-                </DataGrid>
+                />
             </ContainerPartidas>
         </PartidasDiv>
     )

@@ -3,8 +3,14 @@ import db from "./db/db";
 import { torneio, partida, temGolMarcadoPor,jogadorMarcador, selecao } from "./db/schema";
 import e from "express";
 import { sql, eq, desc, or } from "drizzle-orm";
+import cors from "cors";
+
+
 const app: Express = express();
 const port = process.env.PORT || 3000;
+
+app.use(cors()); // Ativa CORS
+app.use(express.json()); // Para receber JSON no corpo das requisições
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hellodadadada World!");
@@ -72,8 +78,7 @@ app.get("/golsJogador", async (req: Request, res: Response) => {
     .innerJoin(jogadorMarcador, eq(temGolMarcadoPor.fk_Jogador_Nome, jogadorMarcador.nome))
     .where(eq(temGolMarcadoPor.golContra, false))
     .groupBy(jogadorMarcador.nome)
-    .orderBy(desc(sql`COUNT(${temGolMarcadoPor.minuto})`))
-    .limit(50);
+    .orderBy(desc(sql`COUNT(${temGolMarcadoPor.minuto})`));
   
       res.status(200).json(totalGolsPorJogador);
   } catch (error) {
@@ -112,8 +117,7 @@ SELECT
     mgj.media_gols
 FROM GolsPorSelecao gps, MediaGolsJogadores mgj
 WHERE gps.total_gols > mgj.media_gols
-ORDER BY gps.total_gols DESC
-LIMIT 10;
+ORDER BY gps.total_gols DESC;
       `
     );
     
@@ -162,8 +166,7 @@ app.get("/selecoesComGoleadoresAcimaMedia", async (req: Request, res: Response) 
         WHERE tgp3.golContra = FALSE
         GROUP BY tgp3.fk_JogadorMarcador_Nome
       ) AS mediaGols)
-  ORDER BY totalGols DESC
-  LIMIT 10;
+  ORDER BY totalGols DESC;
       `
     );
     
@@ -191,8 +194,7 @@ app.get("/selecoesCampoNeutro", async (req: Request, res: Response) => {
         INNER JOIN 
           selecao s2 ON p.fk_Selecao_Nome2 = s2.nome
         WHERE 
-          p.campo_neutro = TRUE
-        LIMIT 10;
+          p.campo_neutro = TRUE;
       `
     );
     
@@ -208,3 +210,4 @@ app.get("/selecoesCampoNeutro", async (req: Request, res: Response) => {
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+

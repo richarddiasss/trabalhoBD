@@ -3,12 +3,8 @@ import {CampoNeutroContainer, CampoNeutroDiv } from './style';
 import HeaderHome from "../../components/HeaderHome";
 import { Titulo } from '../../components/TituloPagina/style';
 import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
-
-const rows: GridRowsProp = [
-    {id: 1, col1: '02/07/1916', col2: 'Chile', col3: 'Uruguay', col4: 'Bueno Aires', col5: 'Argentina'},
-    {id: 2, col1: '08/07/1916', col2: 'Brazil', col3: 'Chile', col4: 'Bueno Aires', col5: 'Argentina'},
-    {id: 3, col1: '12/07/1916', col2: 'Brazil', col3: 'Uruguay', col4: 'Bueno Aires', col5: 'Argentina'}
-]
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const columns: GridColDef[] = [
     { field: 'col1', headerName: 'Data', width: 220, headerAlign: 'center' },
@@ -19,6 +15,43 @@ const columns: GridColDef[] = [
 ]
 
 export default function CampoNeutro(){
+
+    const [partidas, setPartida] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const response = await axios.get('http://localhost:3000/selecoesCampoNeutro');
+                console.log('Dados recebidos da API:', response.data);
+                setPartida(response.data[0]);
+                setLoading(false);
+            } catch (error) {
+                console.error('Erro ao buscar dados:', error);
+                setLoading(false);
+            }
+        }
+    
+        fetchData();
+    }, []);
+
+    const rows: GridRowsProp = partidas.map((partida, index) => {
+        console.log('Continente:', partida);
+        return {
+            id: partida.id || index,
+            col1: partida.dataPartida,
+            col2: partida.selecaoHome,
+            col3: partida.selecaoAway,
+            col4: partida.cidade,
+            col5: partida.pais,
+
+        }
+    });
+    
+    if (loading) {
+        return <div>Carregando...</div>
+    }
+
     return(
         <CampoNeutroDiv>
             <HeaderHome/>

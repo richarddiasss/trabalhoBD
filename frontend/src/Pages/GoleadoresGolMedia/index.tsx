@@ -3,12 +3,9 @@ import {GoleadoresContainer, GoleadoresDiv } from './style';
 import HeaderHome from "../../components/HeaderHome";
 import { Titulo } from '../../components/TituloPagina/style';
 import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
-const rows: GridRowsProp = [
-    {id: 1, col1: 'Portugal', col2: 'Cristiano Ronaldo', col3: '108', col4: '3,1385'},
-    {id: 2, col1: 'Poland', col2: 'Robert Lewandowski', col3: '62', col4: '3,1385'},
-    {id: 3, col1: 'Belgium', col2: 'Romelu Lukaku', col3: '60', col4: '3,1385'}
-]
 
 const columns: GridColDef[] = [
     {field: 'col1', headerName: 'Seleção', width: 250, headerAlign: 'center'},
@@ -18,6 +15,43 @@ const columns: GridColDef[] = [
 ]
 
 export default function Goleadores(){
+
+    const [jogadores, setJogadores] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const response = await axios.get('http://localhost:3000/selecoesComGoleadoresAcimaMedia');
+                console.log('Dados recebidos da API:', response.data);
+                setJogadores(response.data[0]);
+                setLoading(false);
+            } catch (error) {
+                console.error('Erro ao buscar dados:', error);
+                setLoading(false);
+            }
+        }
+    
+        fetchData();
+    }, []);
+
+    const rows: GridRowsProp = jogadores.map((jogador, index) => {
+        console.log('jogador:', jogador);
+        return {
+            id: jogador.id || index,
+            col1: jogador.selecao,
+            col2: jogador.jogador,
+            col3: jogador.totalGols,
+            col4: jogador.mediaGeral,
+        }
+    });
+    
+    console.log('Rows geradas:', rows);
+
+    if (loading) {
+        return <div>Carregando...</div>
+    }
+
     return(
         <GoleadoresDiv>
             <HeaderHome/>
